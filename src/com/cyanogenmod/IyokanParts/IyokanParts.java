@@ -6,9 +6,6 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.util.Log;
-
-import java.util.ArrayList;
 
 public class IyokanParts extends PreferenceActivity  implements Preference.OnPreferenceChangeListener
 {
