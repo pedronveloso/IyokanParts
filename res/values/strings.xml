@@ -3,6 +3,7 @@
     <string name="app_name">IyokanParts</string>
 
     <!-- alerts and errors -->
+    <string name="warning">Warning</string>
     <string name="caution_keyboard_layout">By changing the Keyboard layout some keys might stop working, be sure to change to the correct layout only! Are you sure you want to continue?</string>
 
     <!--preferences -->
