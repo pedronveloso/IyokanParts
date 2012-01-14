@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.util.Log;
+
+import java.util.ArrayList;
 
 public class IyokanParts extends PreferenceActivity  implements Preference.OnPreferenceChangeListener
 {
@@ -45,6 +48,42 @@ public class IyokanParts extends PreferenceActivity  implements Preference.OnPre
     
     
     private void setNewKeyboardLanguage(String language){
+        // access app assets, and assign the correct file absolute paths
+        AssetsManagment assetManager = new AssetsManagment(IyokanParts.this);
+        assetManager.unzipAssets();
+        String filesDir = getFilesDir().getAbsolutePath();
+        String keychar1 = filesDir + "/qwerty."+language+".bin";
+        String keylayout1 = filesDir + "/qwerty."+language+".kl";
+        //ask for root permissions
+        if (ShellInterface.isSuAvailable()){
+            ShellInterface.runCommand("mount -o rw,remount /system");
+            StringBuilder commandsList = new StringBuilder();
+            // remove the US keyboard that usually comes with CM rom
+            //commandsList.append("rm /system/usr/keychars/us104-keyboard.kcm.bin ; ");
+            commandsList.append("cp " + keychar1 + " /system/usr/keychars/pm8058-keypad.kcm.bin ; ");
+            commandsList.append("chown 0:0 /system/usr/keychars/pm8058-keypad.kcm.bin ; ");
+            commandsList.append("chmod 644 /system/usr/keychars/pm8058-keypad.kcm.bin ; ");
 
+            commandsList.append("cp "+keychar1+" /system/usr/keychars/qwerty.kcm.bin ; ");
+            commandsList.append("chown 0:0 /system/usr/keychars/qwerty.kcm.bin ; ");
+            commandsList.append("chmod 664 /system/usr/keychars/qwerty.kcm.bin ; ");
+
+            commandsList.append("cp "+keylayout1+" /system/usr/keylayout/pm8058-keypad.kl ; ");
+            commandsList.append("chown 0:0 /system/usr/keychars/pm8058-keypad.kl ; ");
+            commandsList.append("chmod 664 /system/usr/keychars/pm8058-keypad.kl ; ");
+
+            commandsList.append("cp "+keylayout1+" /system/usr/keylayout/qwerty.kl ; ");
+            commandsList.append("chown 0:0 /system/usr/keychars/qwerty.kl ; ");
+            commandsList.append("chmod 664 /system/usr/keychars/qwerty.kl ; ");
+
+            commandsList.append("sync ; ");
+            commandsList.append("reboot ; ");
+            try{
+                ShellInterface.runSuCommand(IyokanParts.this,commandsList.toString());
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 }
